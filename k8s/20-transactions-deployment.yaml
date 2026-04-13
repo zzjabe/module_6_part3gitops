@@ -19,7 +19,7 @@ spec:
         - name: ghcr-creds
       containers:
         - name: transactions
-          image: ghcr.io/zzjabe/module_6_part3_main-syncer:ae43f648c6deeda005c5fadae3a0bbfa4a7ccda7
+          image: ghcr.io/zzjabe/module_6_part3_main-transactions:372abeb336a9a92a8f1093ee13dbf0dcc72aea9f
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
