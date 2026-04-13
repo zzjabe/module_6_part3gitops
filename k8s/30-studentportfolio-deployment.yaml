@@ -19,7 +19,7 @@ spec:
         - name: ghcr-creds
       containers:
         - name: studentportfolio
-          image: ghcr.io/feranmi-ige/module_6_part3-studentportfolio:latest
+          image: ghcr.io/zzjabe/module_6_part3_main-syncer:ae43f648c6deeda005c5fadae3a0bbfa4a7ccda7
           imagePullPolicy: IfNotPresent
           ports:
             - name: http
