@@ -32,7 +32,7 @@ data:
         listen 80;
         server_name _;
 
-        # 所有后端 API（包括 /api/login, /api/register 等）
+        # ==================== 最重要的：所有 /api/ 开头的请求都转发给 backend ====================
         location ~ ^/api/ {
           proxy_pass http://backend/;
           proxy_http_version 1.1;
@@ -42,7 +42,7 @@ data:
           proxy_set_header X-Forwarded-Proto $scheme;
         }
 
-        # 如果有独立的 transactions API
+        # 如果 transactions 有独立 API，也可以加这一段（可选）
         location ~ ^/api/transactions {
           proxy_pass http://transactions/;
           proxy_http_version 1.1;
@@ -52,7 +52,7 @@ data:
           proxy_set_header X-Forwarded-Proto $scheme;
         }
 
-        # 所有其他请求（前端静态页面 + 路由）
+        # 前端页面（静态文件 + React/Vue 路由）
         location / {
           proxy_pass http://studentportfolio;
           proxy_http_version 1.1;
