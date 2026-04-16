@@ -2,6 +2,7 @@ apiVersion: v1
 kind: ConfigMap
 metadata:
   name: nginx-conf
+  namespace: default
 data:
   nginx.conf: |
     worker_processes auto;
@@ -29,9 +30,10 @@ data:
 
       server {
         listen 80;
+        server_name _;
 
-        # Backend APIs
-        location /api/backend/ {
+        # 所有后端 API（包括 /api/login, /api/register 等）
+        location ~ ^/api/ {
           proxy_pass http://backend/;
           proxy_http_version 1.1;
           proxy_set_header Host $host;
@@ -40,18 +42,8 @@ data:
           proxy_set_header X-Forwarded-Proto $scheme;
         }
 
-        # Transaction API direct (if called by UI)
-        location = /api/transactions {
-          proxy_pass http://backend/api/transactions;
-          proxy_http_version 1.1;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Proto $scheme;
-        }
-
-        # Transaction service (raw)
-        location /api/transactions-service/ {
+        # 如果有独立的 transactions API
+        location ~ ^/api/transactions {
           proxy_pass http://transactions/;
           proxy_http_version 1.1;
           proxy_set_header Host $host;
@@ -60,7 +52,7 @@ data:
           proxy_set_header X-Forwarded-Proto $scheme;
         }
 
-        # Everything else goes to the student portfolio static site
+        # 所有其他请求（前端静态页面 + 路由）
         location / {
           proxy_pass http://studentportfolio;
           proxy_http_version 1.1;
