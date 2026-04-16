@@ -32,7 +32,6 @@ data:
         listen 80;
         server_name _;
 
-        # 匹配所有以 /api/ 开头的请求（最重要的一行）
         location ~ ^/api/ {
           proxy_pass http://backend/;
           proxy_http_version 1.1;
@@ -42,17 +41,6 @@ data:
           proxy_set_header X-Forwarded-Proto $scheme;
         }
 
-        # 同时也匹配没有 /api 前缀的常见路径（如 /login, /register 等）
-        location ~ ^/(login|register|dashboard|logout|deposit|withdraw) {
-          proxy_pass http://backend/;
-          proxy_http_version 1.1;
-          proxy_set_header Host $host;
-          proxy_set_header X-Real-IP $remote_addr;
-          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-          proxy_set_header X-Forwarded-Proto $scheme;
-        }
-
-        # 如果 transactions 有独立 API，也可以加这一段（可选）
         location ~ ^/api/transactions {
           proxy_pass http://transactions/;
           proxy_http_version 1.1;
@@ -62,7 +50,6 @@ data:
           proxy_set_header X-Forwarded-Proto $scheme;
         }
 
-        # 前端页面（静态文件 + React/Vue 路由）
         location / {
           proxy_pass http://studentportfolio;
           proxy_http_version 1.1;
