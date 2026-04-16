@@ -32,8 +32,18 @@ data:
         listen 80;
         server_name _;
 
-        # ==================== 最重要的：所有 /api/ 开头的请求都转发给 backend ====================
+        # 匹配所有以 /api/ 开头的请求（最重要的一行）
         location ~ ^/api/ {
+          proxy_pass http://backend/;
+          proxy_http_version 1.1;
+          proxy_set_header Host $host;
+          proxy_set_header X-Real-IP $remote_addr;
+          proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+          proxy_set_header X-Forwarded-Proto $scheme;
+        }
+
+        # 同时也匹配没有 /api 前缀的常见路径（如 /login, /register 等）
+        location ~ ^/(login|register|dashboard|logout|deposit|withdraw) {
           proxy_pass http://backend/;
           proxy_http_version 1.1;
           proxy_set_header Host $host;
